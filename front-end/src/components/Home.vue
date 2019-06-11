@@ -7,6 +7,7 @@
     </section>
     <div class="container-fluid">
       <section class="row mx-1 justify-content-center">
+        <!-- The v-bind:key part is adding an attribute called key equal to the survey's id to each div with class "card". Vue uses these keys to keep explicit track of each node being created in the DOM which aids in bookkeeping and performance. It is recommended to always set a unique key to the outermost element being used in conjunction with a v-for directive. -->
         <div class="col-lg-4" v-for="survey in surveys" v-bind:key="survey.id">
           <div class="card m-2 border-light shadow">
             <h5 class="card-header light-teal-background">{{ survey.name }}</h5>
@@ -28,99 +29,35 @@
   </div>
 </template>
 <script>
+
+/*
+Vue components have a series of defined lifecycle stages that are meaningful to the developer when 
+doing various things such as pulling in data using an AJAX request. In order to feed survey data into 
+the Home component I will need to hook into one of the Vue lifecycle stages, specifically the beforeMount stage. 
+There are several other stages that are useful for many more things than just AJAX requests (see the official Vue.js docs)
+
+The beforeMount lifecycle stage works well for the API call because it is executed right before the mounting of our 
+component begins, and right before render is called on our component. This gives it time to fetch data before being displayed to the user.
+
+To take advantage of the beforeMount stage of the Home component all I need to do is add it as a new method to the component's 
+Vue object. This function will make a call to my fetchSurveys function and assign the returned surveys to the surveys data property. 
+*/
+
+import { fetchSurveys } from '@/api'  
 export default {  
-  data() {
+ data() {
     return {
-      surveys: [{
-      id: 1,
-      name: 'General Lifestyle',
-      created_at: new Date(2019, 7, 11),
-      questions: [
-        {
-          id: 1,
-          text: 'How Often Do You Participate in Some Form of Exercise?',
-          choices: [
-            { id: 1, text: 'Never', selected: 0 },
-            { id: 2, text: '1 to 3 Times Per Month', selected: 0 },
-            { id: 3, text: '1 to 2 Times Per Week', selected: 0 },
-            { id: 4, text: '3 to 4 Times Per Week', selected: 0 },
-            { id: 5, text: '5 or More Times Per Week', selected: 0 }]
-        }, {
-          id: 2,
-          text: 'How Active Do You Consider Your Occupation (Or Non-Excercise Day-to-Day Activities)?',
-          choices: [
-            { id: 6, text: 'Very Active', selected: 0 },
-            { id: 7, text: 'Somewhat Active', selected: 0 },
-            { id: 8, text: 'Average', selected: 0 },
-            { id: 9, text: 'Not Very Active', selected: 0 },
-            { id: 10, text: 'Not Active at All', selected: 0 }]
-        }, {
-          id: 3,
-          text: 'On A Scale From 1 to 5 - 5 Being the Best, 1 Being the Worst - How Healthy Do You Consider Your Diet To Be?',
-          choices: [
-            { id: 11, text: '5', selected: 0 },
-            { id: 12, text: '4', selected: 0 },
-            { id: 13, text: '3', selected: 0 },
-            { id: 14, text: '2', selected: 0 },
-            { id: 15, text: '1', selected: 0 }]
-        }, {
-          id: 4,
-          text: 'On A Scale From 1 to 5 - 5 Being the Best, 1 Being the Worst - How Much Stress Do You Typically Experience Daily?',
-          choices: [
-            { id: 16, text: '5', selected: 0 },
-            { id: 17, text: '4', selected: 0 },
-            { id: 18, text: '3', selected: 0 },
-            { id: 19, text: '2', selected: 0 },
-            { id: 20, text: '1', selected: 0 }]
-        }]
-      }, {
-        id: 2,
-        name: 'Eating Habits',
-        created_at: new Date(2019, 7, 11),
-        questions: [
-          {
-            id: 5,
-            text: 'How Many Times A Week Do You Skip Breakfast On Average',
-            choices: [
-              { id: 21, text: 'Never', selected: 0 },
-              { id: 22, text: '1-2 Times', selected: 0 },
-              { id: 23, text: '3-4 Times', selected: 0 },
-              { id: 24, text: '5-6 Times', selected: 0 },
-              { id: 25, text: 'Every Day', selected: 0 }]
-          }, {
-            id: 6,
-            text: 'How Many Portions of Fruit Do You Eat Daily On Average',
-            choices: [
-              { id: 26, text: '0 Portions', selected: 0 },
-              { id: 27, text: '1-2 Portions', selected: 0 },
-              { id: 28, text: '3-4 Portions', selected: 0 },
-              { id: 29, text: '5-6 Portions', selected: 0 },
-              { id: 30, text: 'More Than 6 Portions', selected: 0 }]
-          }, {
-            id: 7,
-            text: 'How Many Times A Week Do You Eat Processed Meats On Average (i.e. Ham, Bacon, Salami, Smoked Fish)',
-            choices: [
-              { id: 31, text: 'I Do Not Eat Processed Meats', selected: 0 },
-              { id: 32, text: '1-2 Times', selected: 0 },
-              { id: 33, text: '3-5 Times', selected: 0 },
-              { id: 34, text: '6-8 Times', selected: 0 },
-              { id: 35, text: '9 Or More Times', selected: 0 }]
-          }, {
-            id: 8,
-            text: 'How Many Cups of Water Do You Consume Daily On Average',
-            choices: [
-              { id: 36, text: '1-2 Cups', selected: 0 },
-              { id: 37, text: '3-5 Cups', selected: 0 },
-              { id: 38, text: '6-8 Cups', selected: 0 },
-              { id: 39, text: '9-11 Cups', selected: 0 },
-              { id: 40, text: 'More Than 12 Cups', selected: 0 }]
-          }]
-      }]
+      surveys: []
     }
-  }
+  },
+  beforeMount() {
+    fetchSurveys().then(response => {
+      this.surveys = response
+    })
+  },
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style scoped lang="scss">
 </style>
