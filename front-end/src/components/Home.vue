@@ -1,5 +1,5 @@
-<template>  
-  <div>
+<template>
+  <div> 
     <section class="jumbotron teal-background">
       <div class="text-center">
         <h2 class="font-weight-bold">Check Out Recent Surveys</h2>
@@ -16,7 +16,9 @@
                 <p class="font-italic">Description lorum ipsum caveat empor</p>  
               </div>
               <div class="col-4 m-auto">
-                <a href="#" class="btn btn-secondary rounded">Take Survey</a>  
+                <!-- To dynamically produce the paths using the JavaScript template strings and the survey IDs 
+                  being iterated over I prefix the to parameter with a colon (":"), which is shorthand for the v-bind directive. -->
+                  <router-link :to="`surveys/${survey.id}`" class="btn btn-secondary rounded">Take Survey</router-link>  
               </div>    
             </div>
             <div class="card-footer">

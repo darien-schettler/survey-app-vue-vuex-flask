@@ -11,13 +11,26 @@ to that component. They actually affect all the elements in the entire project u
 
 <template>
   <div id="app">
+    <app-header></app-header>
     <router-view/>
   </div>
 </template>
+<!-- To ensure that app-header is included in every page of the application I place it in the App.vue component. 
 
+To do this I first import the Header component as AppHeader in the script section.
+Then register it by adding a property called components on the App component's Vue object
+  -- set it equal to an object containing the AppHeader component.
+
+I then add the component in the template placing <app-header> right above the <router-view> component. 
+When naming components it's common to use Pascal case concatenating the words describing it together 
+where each word's first letter is capitalized. 
+
+Then I include it in the template in all lowercase with hyphens between each word that began with a capitalized letter. -->
 <script>
+import AppHeader from '@/components/Header'
 export default {
-  name: 'App'
+  name: 'App',
+  components: { AppHeader }
 }
 </script>
 
@@ -34,6 +47,9 @@ $teal: #00D1B2;
 }
 .text-teal{
   color: $teal;
+}
+.cursor-event{
+  cursor: pointer;
 }
 
 </style>
